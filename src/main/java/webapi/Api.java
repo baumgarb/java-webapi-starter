@@ -1,6 +1,8 @@
 package webapi;
 
 import org.joda.time.LocalTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,8 +14,9 @@ import java.util.Arrays;
 
 public class Api {
 
-    public static final String version = System.getenv("VERSION");
-    public static final List<User> users = Arrays.asList(
+    private static Logger logger = LoggerFactory.getLogger(Api.class); 
+    private static final String version = System.getenv("VERSION");
+    private static final List<User> users = Arrays.asList(
         new User(1, "Bernhard"),
         new User(2, "Susi"),
         new User(3, "Markus"),
@@ -21,16 +24,16 @@ public class Api {
     );
 
     public static void main (String[] args) {
-        System.out.println("Hello World!");
+        logger.info("Hello World!");
 
         LocalTime currentTime = new LocalTime();
-        System.out.println("The current local time is: " + currentTime);
+        logger.info("The current local time is: {}", currentTime);
 
         Javalin.create()
             .get("/api/v1/ping", ctx -> ctx.result("pong"))
             .get("/api/v1/version", ctx -> ctx.result(version))
             .get("/api/v1/users", ctx -> {               
-                System.out.println("Users endpoint invoked: returning " + users.size() + " users");
+                logger.info("Users endpoint invoked: returning {} users", users.size());
 
                 ObjectMapper mapper = new ObjectMapper();
                 String json = mapper.writeValueAsString(users);
